@@ -1,7 +1,7 @@
 # AetherCell
 code for ""
 
-![Image text](https://github.com/MySwordIsAlsoSharpe/AetherCell/blob/main/AetherCell.png)  
+![Image text](https://github.com/4Ueyez0nly/AetherCell/blob/main/AetherCell-framework.png)  
 Fig. 1 AetherCell’s architecture and application. a Construction of the unified transcriptomic manifold. b Integration of multi-modal foundation models. c Versatile downstream applications.
 
 ### Train model
