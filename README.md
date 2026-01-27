@@ -37,13 +37,15 @@ python demo_perturb.py --mode chemical --input "drug_smiles.txt"
 # Predict effect of gene knockdown
 python demo_perturb.py --mode genetic --target "BRCA1" --type "knockdown"
 ```
-4. Downstream Task: Drug Sensitivity (AC-RP)A inference script for predicting IC50 by integrating $h_{context}$ and $\Delta z_{pred}$.Bashpython drp_inference.py --cell_line "MCF7" --drug "Paclitaxel"
+3. Downstream Task: Drug Sensitivity (AC-RP)A inference script for predicting IC50 by integrating $h_{context}$ and $\Delta z_{pred}$.
 ```
 python drp_inference.py --cell_line "MCF7"
 ```
 ## Data Availability
 1.Pre-training Bulk RNA-seq: 519,609 samples from TCGA, CCLE, and GEO.
+
 2.L1000 Perturbation Data: ~1.3M standardized pairs from the CMap LINCS project.
+
 ## 🌐 AetherCell-DR Web Platform (Under Development)
 We are building a user-friendly web-based portal for AetherCell-DR (Drug Repurposing). This platform will host our Phenotype-Knowledge Mixture of Experts (PK-MoE) system, allowing users to:
 Perform in silico drug-disease association screening.
