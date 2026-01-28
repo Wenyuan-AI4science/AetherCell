@@ -56,6 +56,12 @@ python drp_inference.py --cell_line "MCF7"
 
 2.L1000 Perturbation Data: ~1.3M standardized pairs from the CMap LINCS project.
 
+## Pre-trained Models & Datasets
+To facilitate reproduction and immediate usage, we provide pre-trained model weights and processed datasets:
+
+- **Pre-trained Weights**: Checkpoints for the Backbone VAE, Satellite VAE, and generative modules are available at [Hugging Face](https://huggingface.co/liwenyuan99/AetherCell).
+- **Training Data**: The processed datasets required for training can be downloaded from [Zenodo](https://zenodo.org/records/18295255).
+
 ## 🌐 AetherCell-DR Web Platform (Under Development)
 We are building a user-friendly web-based portal for AetherCell-DR (Drug Repurposing). This platform will host our Phenotype-Knowledge Mixture of Experts (PK-MoE) system, allowing users to:
 Perform in silico drug-disease association screening.
