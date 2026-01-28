@@ -2,7 +2,7 @@
 # $ conda env create -f environment.yml
 # platform: linux-64
 
-name: deep_env
+name: aethercell
 channels:
   - defaults
   - dglteam/label/th24_cu124
