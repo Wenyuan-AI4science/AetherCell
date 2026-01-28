@@ -37,15 +37,15 @@ python train_aethercell_sh.py
 We provide demos to demonstrate the cross-platform generalization and "virtual laboratory" capabilities of AetherCell.
 1. Latent Shift Generator ($\Delta z$)Generate the mechanism-specific latent transition vector induced by a perturbation.
 ```
-python latent_gen.py --smiles "CN1C=NC2=C1C(=O)N(C(=O)N2C)C" --cell_line "PANC-1"
+python inference_delta_z.py
 ```
 2. Virtual Perturbation Simulation (Transcriptomic Prediction)
 Predict changes from chemical or genetic inputs.
 ```
 # Predict effect of an compound
-python demo_perturb.py --mode chemical --input "drug_smiles.txt"
+python inference_compound_perturbed.py
 # Predict effect of gene knockdown
-python demo_perturb.py --mode genetic --target "BRCA1" --type "knockdown"
+python inference_knockdown_perturbed.py
 ```
 3. Downstream Task: Drug Sensitivity (AC-RP)A inference script for predicting IC50 by integrating $h_{context}$ and $\Delta z_{pred}$.
 ```
