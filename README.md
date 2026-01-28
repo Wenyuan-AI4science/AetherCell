@@ -16,12 +16,22 @@ AetherCell follows a hierarchical Satellite-Backbone architecture.
 
 ### **Step 1: Global Manifold Construction (Backbone VAE)**
 A deep Backbone Variational Autoencoder ($\beta$-VAE) is trained on a comprehensive corpus of 519,609 RNA-seq samples. It utilizes 8-block deep residual stacks to resolve complex non-linear dependencies, compressing the whole transcriptome into a 256-dimensional latent biological state space.
+```
+python train_RNAvae.py
+```
 
 ### **Step 2: Platform Interface Anchoring (Satellite VAE)**
 A specialized "Satellite" VAE is designed for the L1000 platform (978 landmark genes). Using a **Probabilistic Manifold Anchoring** strategy, the L1000 interface is anchored into the pre-established global RNA-seq manifold, correcting for platform-specific biases while preserving intrinsic biological variance.
+```
+python train_Lvae.py
+```
 
 ### **Step 3: Specificity-Driven Generative Modeling**
 The conditional generative module is trained to predict the latent transition vector ($\Delta z$) induced by perturbations. By employing a multi-objective framework with a **Latent Specificity Loss ($\mathcal{L}_{spec}$)**, the model explicitly filters out generic stress centroids and prioritizes mechanism-specific driver signals.
+```
+python train_aethercell_drug.py
+python train_aethercell_sh.py
+```
 
 ## Inference and Virtual Experiments
 We provide demos to demonstrate the cross-platform generalization and "virtual laboratory" capabilities of AetherCell.
