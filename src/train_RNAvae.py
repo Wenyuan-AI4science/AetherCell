@@ -91,7 +91,7 @@ if torch.cuda.device_count() > 1:
 vae_optimizer = optim.Adam(vae_model.parameters(), lr=3e-4)
 num_epochs = 500
 best_pearson =0.0
-save_dir = '../result/model_checkpoints_RNAseq'
+save_dir = '../results/model_ckpt_RNAseq'
 os.makedirs(save_dir, exist_ok=True)
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
     vae_optimizer, 

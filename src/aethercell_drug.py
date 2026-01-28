@@ -138,7 +138,7 @@ if __name__ == "__main__":
     decoder = LINvae_model.decoder
     RNAvae = RNAVAE(device)
     RNAencoder = RNAvae.encoder
-    molformer_path = "/home/liwenyuan/Desktop/2025program/uni2.0re/perturb_model/mini_molformer"
+    molformer_path = "./mini_molformer"
 
     model = JointPerturbationPredictor(
         encoder, decoder, RNAencoder, molformer_path, device

@@ -16,18 +16,18 @@ from sklearn.metrics import r2_score
 
 # os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,4"
 # Only define "constants" or "paths" globally, do not load any large data
-train_meta_csv = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/sh_p/split_cell/sh_meta_s1_train.csv"
-test_meta_csv = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/sh_p/split_cell/sh_meta_s1_test.csv"
-L1000_exp_npy          = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/sh_p/L1000_exp.npy"
-L1000_ctrl_npy         = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/sh_p/L1000_ctrl.npy"
-exp_idx_map_path       = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/sh_p/exp_idx_map.pkl"
-ctrl_idx_map_path      = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/sh_p/ctrl_idx_map.pkl"
-RNA_parquet_path       = "/home/liwenyuan/Desktop/2025program/data/uni/RNAseq.parquet"
-sh_embed_PPI_csv =  "/home/liwenyuan/Desktop/2025program/data/uni/ensg_PPI_emb_thr700_d256_p1.0_q0.5_l2.csv"
-sh_embed_seq_npy = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/emb_tokens_first_all.npy"
-sh_embed_seq_pkl = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/id2idx_ensg_seq2_all.pkl"
-best_model_path_LINCSVAE = "../result/model_ckpt_L_random/epoch_184.pt"
-best_model_path_RNAVAE     = "../result/model_checkpoints_RNAseq/best_model.pt"
+train_meta_csv = "../data/shRNA_perturb/sh_meta_s1_train.csv"
+test_meta_csv = "../data/shRNA_perturb/sh_meta_s1_test.csv"
+L1000_exp_npy          = "../data/shRNA_perturb/L1000_exp.npy"
+L1000_ctrl_npy         = "../data/shRNA_perturb/L1000_ctrl.npy"
+exp_idx_map_path       = "../data/shRNA_perturb/exp_idx_map.pkl"
+ctrl_idx_map_path      = "../data/shRNA_perturb/ctrl_idx_map.pkl"
+RNA_parquet_path       = "../data/shRNA_perturb/RNAseq.parquet"
+sh_embed_PPI_csv =  "../data/shRNA_perturb/ensg_PPI_emb.csv"
+sh_embed_seq_npy = "../data/shRNA_perturb/emb_tokens_first_all.npy"
+sh_embed_seq_pkl = "../data/shRNA_perturb/id2idx_ensg_seq2_all.pkl"
+best_model_path_LINCSVAE = "../results/model_ckpt_L/epoch_184.pt"
+best_model_path_RNAVAE     = "../results/model_ckpt_RNAseq/best_model.pt"
 
 
 
@@ -487,7 +487,7 @@ def main_worker(rank, world_size):
             k_topk=k_topk,max_grad_norm=2.0)
 
         # ====== Logging & Model Saving ======
-        save_dir = './model_sh_gene_b116'
+        save_dir = './model_sh_gene_b'
         os.makedirs(save_dir, exist_ok=True)
         train_log = os.path.join(save_dir, 'train_log.csv')
         eval_csv_path  =  os.path.join(save_dir, 'eval_log.csv')

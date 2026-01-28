@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader,random_split
+from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
 from LINCSvae import LINCSVAE
 from RNAvae import RNAVAE
@@ -437,15 +437,15 @@ def build_loaders(
     return train_loader, test_loaders
 
 
-train_meta = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/L3pretrain/random_split/pretrain_all.csv"
+train_meta = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/L3pretrain/pretrain_all.csv"
 RNA_csv    = "/home/liwenyuan/Desktop/2025program/data/uni/L-RNAseq_p.csv"
 LINCS_pkl  = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/L3pretrain/merge_data.pkl"
 
 test_meta_csvs = {
-    "trt_cp": "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/L3pretrain/random_split/test_trt_cp.csv",
-    "trt_sh": "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/L3pretrain/random_split/test_trt_sh.csv",
-    "trt_xpr": "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/L3pretrain/random_split/test_trt_xpr.csv",
-    "trt_oe" : "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/L3pretrain/random_split/test_trt_oe.csv",
+    "trt_cp": "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/L3pretrain/test_trt_cp.csv",
+    "trt_sh": "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/L3pretrain/test_trt_sh.csv",
+    "trt_xpr": "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/L3pretrain/test_trt_xpr.csv",
+    "trt_oe" : "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/L3pretrain/test_trt_oe.csv",
 }
 
 train_loader, test_loaders = build_loaders(
@@ -463,7 +463,7 @@ train_loader, test_loaders = build_loaders(
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 vae_model = RNAVAE(device)
-best_model_path = '../result/model_checkpoints_RNAseq/best_model.pt'
+best_model_path = '../results/model_ckpt_RNAseq/best_model.pt'
 checkpoint = torch.load(best_model_path, map_location=device)
 clean_state_dict = remove_module_prefix(checkpoint['vae_model_state_dict'])
 vae_model.load_state_dict(clean_state_dict)
@@ -499,7 +499,7 @@ best_pearson = -1e9
 lambda_delta_start, lambda_delta_end = 1.0, 5.0 
 alpha_start, alpha_end = 1.0, 0.2               
 
-save_dir = '../result/model_ckpt_L_random'
+save_dir = '../results/model_ckpt_L'
 os.makedirs(save_dir, exist_ok=True)
 loss_log_csv = os.path.join(save_dir, "train_loss.csv")
 eval_log_csv = os.path.join(save_dir, "eval_pcc.csv")

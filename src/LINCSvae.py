@@ -89,14 +89,3 @@ class LINCSVAE(nn.Module):
         z,en_mu,en_logvar = self.encoder(x)
         return self.decoder(z),en_mu,en_logvar,z
 
-if __name__ == "__main__":
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    vae = LINCSVAE(device=device)
-    batch_size = 10
-    input_data = torch.randn(batch_size, 978).to(device)
-    rec,en_mu,en_logvar,z = vae(input_data)
-    print("rec",rec.shape)
-    print("en_mu",en_mu.shape)
-    print("en_logvar",en_logvar.shape)
-    total_params = sum(p.numel() for p in vae.parameters() if p.requires_grad)
-    print(f"Total learnable parameters: {total_params}")

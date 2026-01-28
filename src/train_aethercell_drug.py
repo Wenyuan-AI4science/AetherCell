@@ -17,23 +17,23 @@ from sklearn.metrics import r2_score
 # os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,4"
 # Only define some "constants" or "paths" globally, don't load any large data
 '''cell blind'''
-train_meta_csv         = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/cp_p/df_train_drug.csv"
-test_meta_drug         = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/cp_p/df_test_drug.csv"
+train_meta_csv         = "../data/compound_perturb/df_train_drug.csv"
+test_meta_drug         = "../data/compound_perturb/df_test_drug.csv"
 '''drug blind'''
-# train_meta_csv         = "/home/liwenyuan/2025EXP/uniperturb/data/uni/df_train_newdrug.csv"
-# test_meta_drug         = "/home/liwenyuan/2025EXP/uniperturb/data/uni/df_test_newdrug.csv"
+# train_meta_csv         = "../data/compound_perturb/df_train_newdrug.csv"
+# test_meta_drug         = "../data/compound_perturb/df_test_newdrug.csv"
 
-L1000_exp_npy          = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/cp_p/L1000_exp.npy"
-L1000_ctrl_npy         = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/cp_p/L1000_ctrl.npy"
-exp_idx_map_path       = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/cp_p/exp_idx_map.pkl"
-ctrl_idx_map_path      = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/cp_p/ctrl_idx_map.pkl"
-RNA_parquet_path       = "/home/liwenyuan/Desktop/2025program/data/uni/RNAseq.parquet"
-drug_input_ids_npy     = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/cp_p/drug_input_ids.npy"
-drug_attention_mask_npy= "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/cp_p/drug_attention_mask.npy"
-drug_idx_map_path      = "/home/liwenyuan/Desktop/2025program/uni2.0re/L3_per_data/cp_p/drug_idx_map.pkl"
-molformer_path         = "/home/liwenyuan/Desktop/2025program/uni2.0re/perturb_model/mini_molformer"
-best_model_path_LINCSVAE = "../result/model_ckpt_L_random/epoch_184.pt"
-best_model_path_RNAVAE     = "../result/model_checkpoints_RNAseq/best_model.pt"
+L1000_exp_npy          = "../data/compound_perturb/L1000_exp.npy"
+L1000_ctrl_npy         = "../data/compound_perturb/L1000_ctrl.npy"
+exp_idx_map_path       = "../data/compound_perturb/exp_idx_map.pkl"
+ctrl_idx_map_path      = "../data/compound_perturb/ctrl_idx_map.pkl"
+RNA_parquet_path       = "../data/compound_perturb/RNAseq.parquet"
+drug_input_ids_npy     = "../data/compound_perturb/drug_input_ids.npy"
+drug_attention_mask_npy= "../data/compound_perturb/drug_attention_mask.npy"
+drug_idx_map_path      = "../data/compound_perturb/drug_idx_map.pkl"
+molformer_path         = "./mini_molformer"
+best_model_path_LINCSVAE = "../results/model_ckpt_L/epoch_184.pt"
+best_model_path_RNAVAE     = "../results/model_ckpt_RNAseq/best_model.pt"
 
 
 
@@ -542,7 +542,7 @@ def main_worker(rank, world_size):
             k_topk=k_topk,max_grad_norm=2.0)
 
         # ====== Logging & Model saving ======
-        save_dir = './model_drug_cell_b116'
+        save_dir = '../results/model_drug_cell_b'
         os.makedirs(save_dir, exist_ok=True)
         train_log = os.path.join(save_dir, 'train_log.csv')
         eval_csv_path  =  os.path.join(save_dir, 'eval_log.csv')
