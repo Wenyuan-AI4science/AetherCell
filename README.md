@@ -49,7 +49,7 @@ python inference_knockdown_perturbed.py
 ```
 3. Downstream Task: Drug Sensitivity (AC-RP)This module supports the training and inference of the AetherCell-Response Prediction (AC-RP) model. It calculates $IC_{50}$ by fusing context-specific features ($h_{context}$) and predicted latent transitions ($\Delta z_{pred}$)
 ```
-python train_aetherceelRP.py
+python train_aethercellRP.py
 ```
 ## Data Availability
 1.Pre-training Bulk RNA-seq: 519,609 samples from TCGA, CCLE, and GEO.
