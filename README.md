@@ -45,9 +45,9 @@ Predict changes from chemical or genetic inputs.
 # Predict effect of an compound
 python inference_compound_perturbed.py
 ```
-3. Downstream Task: Drug Sensitivity (AC-RP)A inference script for predicting IC50 by integrating $h_{context}$ and $\Delta z_{pred}$.
+3. Downstream Task: Drug Sensitivity (AC-RP)This module supports the training and inference of the AetherCell-Response Prediction (AC-RP) model. It calculates $IC_{50}$ by fusing context-specific features ($h_{context}$) and predicted latent transitions ($\Delta z_{pred}$)
 ```
-python drp_inference.py --cell_line "MCF7"
+python train_aetherceelRP.py
 ```
 ## Data Availability
 1.Pre-training Bulk RNA-seq: 519,609 samples from TCGA, CCLE, and GEO.
