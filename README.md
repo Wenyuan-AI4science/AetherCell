@@ -44,8 +44,6 @@ Predict changes from chemical or genetic inputs.
 ```
 # Predict effect of an compound
 python inference_compound_perturbed.py
-# Predict effect of gene knockdown
-python inference_knockdown_perturbed.py
 ```
 3. Downstream Task: Drug Sensitivity (AC-RP)A inference script for predicting IC50 by integrating $h_{context}$ and $\Delta z_{pred}$.
 ```
