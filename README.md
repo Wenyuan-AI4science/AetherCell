@@ -37,7 +37,7 @@ python train_aethercell_sh.py
 We provide demos to demonstrate the cross-platform generalization and "virtual laboratory" capabilities of AetherCell.
 1. Latent Shift Generator ($\Delta z$)Generate the mechanism-specific latent transition vector induced by a perturbation.
 ```
-python inference_delta_z.py
+aethercell_delta_z_inference.ipynb
 ```
 2. Virtual Perturbation Simulation (Transcriptomic Prediction)
 Predict changes from chemical or genetic inputs.
