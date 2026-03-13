@@ -184,8 +184,6 @@ Pre-trained weights are available at [Hugging Face](https://huggingface.co/liwen
 
 | Model asset | Description |
 |-------------|-------------|
-| Backbone VAE | Global RNA-seq latent manifold |
-| Satellite VAE | L1000–RNA-seq interface alignment |
 | Perturbation predictors | Drug / sh / oe / xpr perturbation modules |
 | AC-RP | Drug response prediction |
 | PK-MoE | Drug repurposing system |
@@ -214,10 +212,10 @@ Pre-trained weights are available at [Hugging Face](https://huggingface.co/liwen
 This work is currently under peer review. Please cite the associated manuscript or repository as appropriate.
 
 ```bibtex
-@software{aethercell2025,
+@software{aethercell2026,
   title   = {AetherCell: A generative engine for virtual cell perturbation and in vivo drug discovery},
   author  = {[Authors will be added upon publication]},
-  year    = {2025},
+  year    = {2026},
   note    = {Manuscript under review},
   url     = {https://huggingface.co/liwenyuan99/AetherCell}
 }
