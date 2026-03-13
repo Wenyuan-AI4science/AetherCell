@@ -42,10 +42,7 @@ For a project positioned as a serious biomedical research contribution, the repo
 - understand the scientific scope
 - reproduce the main access pathways
 - evaluate the practical usability of the system
-
-For that reason, this README keeps the model description brief and instead foregrounds **access**, **reproducibility**, and **research boundaries**.
-
-AetherCell also demonstrates a development pattern we believe is especially useful in biomedicine: pairing a domain model with a task-oriented interaction layer. In this repository, that means the model is accessible through both a programmable API and a natural-language workflow, making it easier for non-specialist users to test core capabilities without rewriting infrastructure.
+AetherCell demonstrates a development pattern we believe is especially useful in biomedicine: pairing a domain model with a task-oriented interaction layer. In this repository, that means the model is accessible through both a programmable API and a natural-language workflow, making it easier for non-specialist users to test core capabilities without rewriting infrastructure.
 
 ---
 
@@ -195,20 +192,9 @@ Pre-trained weights are available at [Hugging Face](https://huggingface.co/liwen
 
 ---
 
-## Recommended presentation for a high-impact research project
-
-If the project is being presented at a journal audience expecting a high evidentiary standard, the repository benefits from four choices:
-
-1. **Keep claims narrower than the paper headline.** Avoid marketing language and let the manuscript carry the strongest quantitative statements.
-2. **Lead with research utility, not architecture detail.** Readers who care about internals will go to the paper; readers who land on the repository first want access paths and reproducibility.
-3. **Make practical dependencies explicit.** In this case, both the Python API and Claude Code workflow require downloading weights from Hugging Face.
-4. **Show translational usability without overstating deployment readiness.** The web demo and report-generation workflow are valuable, but should be framed as research access tools rather than clinical products.
-
----
-
 ## Limitations
 
-- Performance may vary across perturbation classes, cell lines, and biological contexts not well represented in the training data.
+- Performance may vary across perturbation classes, cell lines, and biological contexts.
 - Gene perturbation tasks rely on the availability and quality of perturbation-specific representations.
 - Drug repurposing outputs are hypothesis-generating and require downstream experimental validation.
 - The web demo depends on limited daily LLM API quota and is not guaranteed to provide uninterrupted service.
