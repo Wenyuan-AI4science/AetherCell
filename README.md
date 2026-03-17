@@ -221,7 +221,7 @@ If you use AetherCell in your research, please cite:
   doi     = {10.64898/2026.03.13.710968},
   url     = {https://www.biorxiv.org/content/10.64898/2026.03.13.710968v1}
 }
-
+```
 Use of this repository, model weights, outputs, or derivative models in any publication, preprint, report, benchmark, presentation, or public release requires citation of the above preprint in accordance with the license terms.
 
 ---
