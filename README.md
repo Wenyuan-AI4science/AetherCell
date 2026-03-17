@@ -258,5 +258,4 @@ Redistribution of model weights as standalone assets without permission
 
 Removing or obscuring attribution, provenance, or citation requirements
 
-See LICENSE
- for full terms.
+See LICENSE for full terms.
