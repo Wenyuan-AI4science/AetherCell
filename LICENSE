@@ -1,21 +1,239 @@
-MIT License
+AetherCell Research License v1.0
 
-Copyright (c) 2026 李文远
+Copyright (c) 2026 Wenyuan Li, Yang Chen, Zhaoyi Peng,
+Lei Xiang, Dong Wang, and Zhi Xie.
+All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This license governs the use, reproduction, modification, distribution,
+and sharing of the AetherCell repository, source code, model weights,
+checkpoints, configurations, associated model assets, and related materials
+(collectively, the “Materials”).
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+By accessing, using, copying, modifying, training, fine-tuning, adapting,
+distributing, or otherwise making use of the Materials, you agree to be
+bound by the terms of this License.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+1. Definitions
+
+1.1 “Materials” means the AetherCell repository, code, model weights,
+checkpoints, tokenizer or vocabulary files if any, prompts, templates,
+configurations, documentation, metadata, evaluation assets, and associated
+files made available by the licensors.
+
+1.2 “Output” means any result, prediction, score, ranking, embedding,
+generated content, analysis result, hypothesis, or other output produced
+in whole or in part using the Materials.
+
+1.3 “Derivative Material” means any modified, adapted, fine-tuned,
+continued-trained, distilled, merged, extended, improved, translated,
+ported, wrapped, reparameterized, compressed, quantized, or otherwise
+derived version of the Materials, in whole or in part.
+
+1.4 “Public Disclosure” means any public or semi-public communication,
+including but not limited to a manuscript, preprint, journal article,
+conference paper, poster, thesis, benchmark report, technical report,
+presentation, model card, dataset card, web page, repository page,
+Hugging Face page, API documentation, press release, blog post, or other
+public-facing document or release.
+
+1.5 “Non-Commercial Research Use” means use solely for academic,
+scholarly, educational, or internal scientific research purposes, and
+not for commercial advantage, monetary compensation, fee-for-service,
+productization, clinical deployment, or other commercial exploitation.
+
+2. License Grant
+
+Subject to the terms and conditions of this License, the licensors grant
+you a limited, revocable, non-exclusive, non-transferable,
+non-sublicensable license to:
+
+(a) access and use the Materials for Non-Commercial Research Use only;
+
+(b) reproduce the Materials internally for Non-Commercial Research Use only;
+
+(c) modify, fine-tune, adapt, improve, evaluate, and create Derivative
+Materials from the Materials for Non-Commercial Research Use only.
+
+No rights are granted except as expressly stated in this License.
+
+3. Mandatory Attribution and Citation
+
+3.1 Citation Requirement
+Any use of the Materials, Output, or any Derivative Material in connection
+with a Public Disclosure requires citation of the following preprint:
+
+Li, Wenyuan; Chen, Yang; Peng, Zhaoyi; Xiang, Lei; Wang, Dong; Xie, Zhi.
+AetherCell: A Generative Engine for Virtual Cell Perturbation and In Vivo
+Drug Discovery. bioRxiv (2026).
+DOI: 10.64898/2026.03.13.710968
+URL: https://www.biorxiv.org/content/10.64898/2026.03.13.710968v1
+
+3.2 Scope of Citation Requirement
+The citation requirement in Section 3.1 applies to all Public Disclosures
+that involve, rely on, evaluate, compare against, report results from,
+or are materially enabled by:
+
+(a) the unmodified Materials;
+
+(b) any Output generated using the Materials;
+
+(c) any Derivative Material, including but not limited to fine-tuned,
+adapted, retrained, improved, distilled, merged, or extended models;
+
+(d) benchmarks, datasets, workflows, downstream systems, or applications
+built in whole or in part upon the Materials.
+
+3.3 Retention of Attribution Notice
+You must retain all copyright notices, attribution notices, authorship
+information, provenance notices, and citation instructions included in or
+with the Materials.
+
+3.4 Derivative Materials
+If you distribute or publicly disclose any Derivative Material, you must:
+
+(a) clearly state that it is derived from AetherCell;
+
+(b) identify that modifications were made;
+
+(c) retain this attribution and citation requirement in the accompanying
+documentation, repository, model card, or release page;
+
+(d) include the citation specified in Section 3.1 in any associated
+Public Disclosure.
+
+4. Permitted Uses
+
+You may use the Materials only for Non-Commercial Research Use, including:
+
+(a) academic research;
+
+(b) internal scientific evaluation;
+
+(c) benchmarking and reproducibility studies;
+
+(d) non-commercial fine-tuning, adaptation, and improvement;
+
+(e) thesis or dissertation work;
+
+(f) classroom or educational demonstration, provided such use remains
+non-commercial and complies with this License.
+
+5. Prohibited Uses
+
+You may not, without prior written permission from the licensors:
+
+5.1 use the Materials or any Derivative Material for any commercial
+purpose, including but not limited to sale, licensing, subscription,
+consulting, contract research for commercial clients, paid API access,
+hosted services, integration into commercial software, or use in support
+of a commercial product or service;
+
+5.2 use the Materials, Output, or any Derivative Material for clinical
+use, diagnosis, patient stratification, treatment selection, treatment
+recommendation, medical device functionality, or any other medical or
+healthcare decision-making;
+
+5.3 redistribute the original model weights, checkpoints, or materially
+similar standalone model assets, except with prior written permission
+from the licensors;
+
+5.4 remove, alter, obscure, or misrepresent any attribution, authorship,
+provenance, copyright notice, or citation requirement;
+
+5.5 falsely imply endorsement by the licensors or authors;
+
+5.6 use the Materials in violation of applicable law, regulation, or
+institutional policy.
+
+6. Distribution of Code and Derivative Materials
+
+6.1 Repository Code
+You may redistribute unmodified or modified code portions of the Materials
+for Non-Commercial Research Use only, provided that you:
+
+(a) include this License;
+
+(b) retain all attribution and copyright notices;
+
+(c) clearly indicate any modifications made;
+
+(d) comply with the citation obligations in Section 3.
+
+6.2 Derivative Models
+You may not distribute Derivative Material in the form of model weights,
+checkpoints, or substantially equivalent standalone model assets unless:
+
+(a) such distribution is solely for Non-Commercial Research Use;
+
+(b) this License is included with the release;
+
+(c) attribution to AetherCell is clearly preserved;
+
+(d) the citation requirement in Section 3 is clearly reproduced in the
+repository, release notes, model card, or equivalent documentation;
+
+(e) the release clearly identifies that the derivative model is based on
+AetherCell and describes the nature of the modification.
+
+Notwithstanding the foregoing, the licensors reserve the right to require
+separate written permission for redistribution of weights or checkpoints.
+
+7. No Claim Over Independent Work
+
+This License applies only to the Materials, Outputs derived from them,
+and Derivative Materials based on them. It does not restrict independent
+research or independently developed work that does not use, reproduce,
+adapt, or derive from the Materials.
+
+8. Research-Only Nature
+
+The Materials are provided for research purposes only. They are not
+validated for clinical use or patient care. Any biological, chemical,
+therapeutic, or translational hypothesis generated using the Materials
+must be independently reviewed and experimentally validated before any
+real-world application.
+
+9. No Warranty
+
+THE MATERIALS ARE PROVIDED “AS IS” AND “AS AVAILABLE,” WITHOUT WARRANTY
+OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT,
+ACCURACY, PERFORMANCE, OR SAFETY. THE LICENSORS DO NOT WARRANT THAT THE
+MATERIALS WILL MEET YOUR REQUIREMENTS OR THAT THEIR USE WILL BE
+UNINTERRUPTED OR ERROR-FREE.
+
+10. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL THE LICENSORS
+OR AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN
+CONNECTION WITH THE MATERIALS OR THE USE OR OTHER DEALINGS IN THE
+MATERIALS.
+
+11. Termination
+
+Any breach of this License automatically terminates your rights under it.
+Upon termination, you must cease use of the Materials and destroy any
+copies in your possession or control, except to the extent retention is
+required by law or institutional recordkeeping rules.
+
+12. Reservation of Rights
+
+All rights not expressly granted under this License are reserved by the
+licensors.
+
+13. Governing Interpretation
+
+This License shall be interpreted to give maximum effect to its research-
+only, attribution-preserving, and citation-mandating intent. If any
+provision is held unenforceable, the remaining provisions shall remain
+in effect to the fullest extent permitted by law.
+
+14. Contact
+
+For permission requests, commercial licensing inquiries, clinical use
+requests, or questions regarding redistribution, please contact the
+corresponding author:
+
+Zhi Xie
+xiezhi@gmail.com
