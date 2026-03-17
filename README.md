@@ -12,6 +12,7 @@
 **Manuscript title:** *AetherCell: A generative engine for virtual cell perturbation and in vivo drug discovery*
 
 **Resources**
+- **Preprint:** [bioRxiv](https://www.biorxiv.org/content/10.64898/2026.03.13.710968v1)
 - **Model weights:** [Hugging Face — liwenyuan99/AetherCell](https://huggingface.co/liwenyuan99/AetherCell)
 - **Interactive workflow:** [Claude Code](https://claude.ai/claude-code)
 - **Web demo:** [http://101.32.8.25/](http://101.32.8.25/)
@@ -214,22 +215,48 @@ If you use AetherCell in your research, please cite:
 ```bibtex
 @article{li2026aethercell,
   title   = {AetherCell: A Generative Engine for Virtual Cell Perturbation and In Vivo Drug Discovery},
-  author  = {Wenyuan Li, Yang Chen, Zhaoyi Peng, Lei Xiang, Dong Wang, Zhi Xie,},
+  author  = {Li, Wenyuan and Chen, Yang and Peng, Zhaoyi and Xiang, Lei and Wang, Dong and Xie, Zhi},
   journal = {bioRxiv},
   year    = {2026},
   doi     = {10.64898/2026.03.13.710968},
   url     = {https://www.biorxiv.org/content/10.64898/2026.03.13.710968v1}
 }
----
 
+Use of this repository, model weights, outputs, or derivative models in any publication, preprint, report, benchmark, presentation, or public release requires citation of the above preprint in accordance with the license terms.
+
+---
 
 ## License
 
-**MIT License with Research Use Restriction**
+This project is distributed under the AetherCell Research License v1.0.
 
-- Academic and research use: Allowed
-- Commercial use: Not allowed
-- Clinical applications: Not allowed
-- Redistribution of model weights separately: Not allowed
+Permitted use
 
-See [LICENSE](LICENSE) for full terms.
+Non-commercial academic research
+
+Non-commercial scientific evaluation
+
+Internal reproduction for research purposes
+
+Fine-tuning, adaptation, or improvement for non-commercial research only
+
+Conditions
+
+Citation of the AetherCell preprint is mandatory for any use of the repository, model, model weights, outputs, or any derived / fine-tuned / adapted / improved model in a publication, preprint, report, benchmark, presentation, or other public disclosure
+
+Any redistributed derivative model must retain this attribution and citation notice
+
+Any modified version must clearly indicate that changes were made
+
+Prohibited use
+
+Commercial use
+
+Clinical or medical decision-making
+
+Redistribution of model weights as standalone assets without permission
+
+Removing or obscuring attribution, provenance, or citation requirements
+
+See LICENSE
+ for full terms.
