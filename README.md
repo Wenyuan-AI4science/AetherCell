@@ -209,18 +209,17 @@ Pre-trained weights are available at [Hugging Face](https://huggingface.co/liwen
 
 ## Citation
 
-This work is currently under peer review. Please cite the associated manuscript or repository as appropriate.
+If you use AetherCell in your research, please cite:
 
 ```bibtex
-@software{aethercell2026,
-  title   = {AetherCell: A generative engine for virtual cell perturbation and in vivo drug discovery},
-  author  = {[Authors will be added upon publication]},
+@article{li2026aethercell,
+  title   = {AetherCell: A Generative Engine for Virtual Cell Perturbation and In Vivo Drug Discovery},
+  author  = {Wenyuan Li, Yang Chen, Zhaoyi Peng, Lei Xiang, Dong Wang, Zhi Xie,},
+  journal = {bioRxiv},
   year    = {2026},
-  note    = {Manuscript under review},
-  url     = {https://huggingface.co/liwenyuan99/AetherCell}
+  doi     = {10.64898/2026.03.13.710968},
+  url     = {https://www.biorxiv.org/content/10.64898/2026.03.13.710968v1}
 }
-```
-
 ---
 
 ## License
