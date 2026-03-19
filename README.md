@@ -2,7 +2,6 @@
 
 > **Repository accompanying a manuscript under peer review.** AetherCell is a generative modelling framework for virtual cell perturbation, drug response prediction, and drug repurposing from transcriptomic data.
 
-[![License](https://img.shields.io/badge/License-MIT%20(Research%20Only)-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.12%2B-orange.svg)](https://pytorch.org/)
 [![HuggingFace](https://img.shields.io/badge/Weights-HuggingFace-yellow.svg)](https://huggingface.co/liwenyuan99/AetherCell)
