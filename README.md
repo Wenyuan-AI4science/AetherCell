@@ -101,7 +101,7 @@ claude
 ### Environment setup
 
 ```bash
-conda env create -f environments.yml
+conda env create -f environment.yml
 conda activate aethercell
 ```
 
