@@ -7,7 +7,6 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.12%2B-orange.svg)](https://pytorch.org/)
 [![HuggingFace](https://img.shields.io/badge/Weights-HuggingFace-yellow.svg)](https://huggingface.co/liwenyuan99/AetherCell)
 [![Agent-Ready](https://img.shields.io/badge/Agent--Ready-Skills%20Included-00b8d9.svg)](#agent-ready-skills)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-Integrated-purple.svg)](https://claude.ai/claude-code)
 [![Web Demo](https://img.shields.io/badge/Web%20Demo-Drug%20Screening-success.svg)](http://101.32.8.25/)
 
 **Manuscript title:** *AetherCell: A generative engine for virtual cell perturbation and in vivo drug discovery*
