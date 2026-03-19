@@ -6,6 +6,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.12%2B-orange.svg)](https://pytorch.org/)
 [![HuggingFace](https://img.shields.io/badge/Weights-HuggingFace-yellow.svg)](https://huggingface.co/liwenyuan99/AetherCell)
+[![Agent-Ready](https://img.shields.io/badge/Agent--Ready-Skills%20Included-00b8d9.svg)](#agent-ready-skills)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Integrated-purple.svg)](https://claude.ai/claude-code)
 [![Web Demo](https://img.shields.io/badge/Web%20Demo-Drug%20Screening-success.svg)](http://101.32.8.25/)
 
@@ -31,7 +32,7 @@ AetherCell is designed to support three related tasks from transcriptomic and mo
 3. **Drug repurposing** for disease-oriented candidate ranking
 
 The framework aligns context-rich bulk RNA-seq data with perturbation-dense L1000 data in a shared latent space, enabling perturbation modelling across data regimes and downstream screening workflows.
-
+**Beyond a static methodology, AetherCell is packaged as an "Agent-Ready" engine.** We provide not only the model weights and Python APIs, but also fully executable **Skills** (e.g., automated perturbation-to-enrichment pipelines) that can be seamlessly integrated into AI scientist workflows or natural-language interfaces.
 This repository is intended as a research-facing entry point rather than a full methodological exposition. For architecture, training objectives, benchmark design, and quantitative results, please refer to the associated manuscript.
 
 ---
@@ -65,12 +66,19 @@ For local use, batch experiments, and integration into custom research pipelines
 
 > **Important:** using the Python API requires downloading the model files from **Hugging Face** first.
 
-### 3. Claude Code workflow
+### 3. Agent-Ready Skills (via Claude Code & CLI)
 
-AetherCell can also be used through a natural-language workflow in [Claude Code](https://claude.ai/claude-code), which is useful for rapid task execution, interactive exploration, and report-oriented usage.
-
+To bridge the gap between static model weights and executable science, AetherCell comes with predefined **Skills**—automated, end-to-end workflows that can be triggered via natural language (using [Claude Code](https://claude.ai/claude-code)) or automated AI agents.
+**Featured Skills:**
+- 🧬 **Perturbation-to-Enrichment Pipeline:** Input a drug or gene target, and the skill automatically predicts the transcriptomic changes, calculates fold changes, extracts top Differentially Expressed Genes (DEGs), and runs downstream enrichment analysis.
+- 💊 **Disease-Centric Drug Screening:** Input a disease name, and the skill queries the MoE predictor to generate a ranked list of repurposed drug candidates with actionable insights.
 > **Important:** Claude Code mode also requires downloading the model files from **Hugging Face** first.
 
+**Quick Demo via Claude Code:**
+```bash
+npm install -g @anthropic-ai/claude-code
+cd aethercell-drug-discovery-v1.0.0
+claude
 ---
 
 ## Core research tasks
@@ -152,19 +160,6 @@ from models.moe_repurposing.moe_inference import MoEPredictor
 predictor = MoEPredictor()
 results = predictor.predict_for_disease('Alzheimer disease', top_n=10)
 ```
-
-### Claude Code
-
-```bash
-npm install -g @anthropic-ai/claude-code
-cd aethercell-drug-discovery-v1.0.0
-claude
-```
-
-Example prompts:
-- *What genes does aspirin affect in MCF7 cells?*
-- *Is doxorubicin effective against A549 lung cancer cells?*
-- *Find drugs that could potentially treat Alzheimer's disease.*
 
 ---
 
