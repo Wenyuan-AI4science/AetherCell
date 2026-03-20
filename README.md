@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.12%2B-orange.svg)](https://pytorch.org/)
 [![HuggingFace](https://img.shields.io/badge/Weights-HuggingFace-yellow.svg)](https://huggingface.co/liwenyuan99/AetherCell)
-[![Agent-Ready](https://img.shields.io/badge/Agent--Ready-Skills%20Included-00b8d9.svg)]([#agent-ready-skills](https://huggingface.co/liwenyuan99/AetherCell))
+[![Agent-Ready](https://img.shields.io/badge/Agent--Ready-Skills%20Included-00b8d9.svg)](https://huggingface.co/liwenyuan99/AetherCell)
 [![Web Demo](https://img.shields.io/badge/Web%20Demo-Drug%20Screening-success.svg)](http://101.32.8.25/)
 
 **Manuscript title:** *AetherCell: A generative engine for virtual cell perturbation and in vivo drug discovery*
@@ -211,33 +211,14 @@ Use of this repository, model weights, outputs, or derivative models in any publ
 ## License
 
 This project is distributed under the AetherCell Research License v1.0.
-
 Permitted use
-
 Non-commercial academic research
-
 Non-commercial scientific evaluation
-
 Internal reproduction for research purposes
-
 Fine-tuning, adaptation, or improvement for non-commercial research only
 
 Conditions
-
 Citation of the AetherCell preprint is mandatory for any use of the repository, model, model weights, outputs, or any derived / fine-tuned / adapted / improved model in a publication, preprint, report, benchmark, presentation, or other public disclosure
 
 Any redistributed derivative model must retain this attribution and citation notice
-
-Any modified version must clearly indicate that changes were made
-
-Prohibited use
-
-Commercial use
-
-Clinical or medical decision-making
-
-Redistribution of model weights as standalone assets without permission
-
-Removing or obscuring attribution, provenance, or citation requirements
-
 See LICENSE for full terms.
