@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-1.12%2B-orange.svg)](https://pytorch.org/)
 [![HuggingFace](https://img.shields.io/badge/Weights-HuggingFace-yellow.svg)](https://huggingface.co/liwenyuan99/AetherCell)
-[![Agent-Ready](https://img.shields.io/badge/Agent--Ready-Skills%20Included-00b8d9.svg)](#agent-ready-skills)
+[![Agent-Ready](https://img.shields.io/badge/Agent--Ready-Skills%20Included-00b8d9.svg)]([#agent-ready-skills](https://huggingface.co/liwenyuan99/AetherCell))
 [![Web Demo](https://img.shields.io/badge/Web%20Demo-Drug%20Screening-success.svg)](http://101.32.8.25/)
 
 **Manuscript title:** *AetherCell: A generative engine for virtual cell perturbation and in vivo drug discovery*
@@ -13,7 +13,6 @@
 **Resources**
 - **Preprint:** [bioRxiv](https://www.biorxiv.org/content/10.64898/2026.03.13.710968v1)
 - **Model weights:** [Hugging Face — liwenyuan99/AetherCell](https://huggingface.co/liwenyuan99/AetherCell)
-- **Interactive workflow:** [Claude Code](https://claude.ai/claude-code)
 - **Web demo:** [http://101.32.8.25/](http://101.32.8.25/)
 - **Processed datasets:** [Zenodo](https://zenodo.org/records/18295255)
 
