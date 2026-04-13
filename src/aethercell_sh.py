@@ -120,16 +120,16 @@ if __name__ == "__main__":
         total_params = sum(p.numel() for p in model.parameters())
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         
-        print(f"📦 Total parameters: {total_params:,}")
-        print(f"🧠 Trainable parameters: {trainable_params:,}")
-        print(f"🧊 Frozen parameters: {total_params - trainable_params:,}")
+        print(f"Total parameters: {total_params:,}")
+        print(f"Trainable parameters: {trainable_params:,}")
+        print(f"Frozen parameters: {total_params - trainable_params:,}")
 
-        # 可选：列出各部分的 trainable 状态
-        # print("\n🔍 Parameter breakdown (name | shape | trainable):")
+        # Optional: list the trainable status of each component
+        # print("\nParameter breakdown (name | shape | trainable):")
         # for name, param in model.named_parameters():
-        #     print(f"{name:60} | {tuple(param.shape)} | {'✅' if param.requires_grad else '❌'}")
+        #     print(f"{name:60} | {tuple(param.shape)} | {'Yes' if param.requires_grad else 'No'}")
 
-    # 使用方式（确保是 nn.DataParallel 包裹的 .module）
+    # Usage (make sure to use .module if wrapped in nn.DataParallel)
     device = 'cpu'
     LINvae_model = LINCSVAE(device)
     encoder = LINvae_model.encoder

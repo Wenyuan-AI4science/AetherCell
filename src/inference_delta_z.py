@@ -129,14 +129,14 @@ def main():
 
     # Load LINCS VAE
     LINvae_model = LINCSVAE("cpu")
-    lin_ckpt = torch.load(best_model_path_LINCSVAE, map_location="cpu")
+    lin_ckpt = torch.load(best_model_path_LINCSVAE, map_location="cpu", weights_only=False)
     LINvae_model.load_state_dict(remove_module_prefix(lin_ckpt['vae_model_state_dict']))
     encoder = LINvae_model.encoder.to(device)
     decoder = LINvae_model.decoder.to(device)
 
     # Load RNA VAE
     RNAvae_model = RNAVAE("cpu")
-    rna_ckpt = torch.load(best_model_path_RNAVAE, map_location="cpu")
+    rna_ckpt = torch.load(best_model_path_RNAVAE, map_location="cpu", weights_only=False)
     RNAvae_model.load_state_dict(remove_module_prefix(rna_ckpt['vae_model_state_dict']))
     RNAencoder = RNAvae_model.encoder.to(device)
 

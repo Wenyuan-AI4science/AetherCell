@@ -16,7 +16,7 @@ class DDPPredictor(nn.Module):
                  device: torch.device):
         super().__init__()
         self.device = device
-        # 1) 用 RNAVAE.encoder 替换原来的 L_encoder，加载其权重并冻结
+        # 1) Replace the original L_encoder with RNAVAE.encoder, load its weights and freeze
         self.RNAencoder = pretrained_model.RNAencoder.to(device)
         for param in self.RNAencoder.parameters():
             param.requires_grad = False
@@ -46,7 +46,7 @@ class DDPPredictor(nn.Module):
             nn.Linear(128,1),
         ).to(device)
     def forward(self, RNAseq, input_ids, attention_mask):
-        # 药物分子特征
+        # Drug molecular features
         input_ids = input_ids.to(self.device)
         attention_mask = attention_mask.to(self.device)
         mol_out = self.molformer(input_ids=input_ids, attention_mask=attention_mask)

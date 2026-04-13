@@ -217,8 +217,8 @@ def main():
         ctrl_idx_map_path=ctrl_idx_map_path,
         RNA_parquet_path=RNA_parquet_path,
         sh_embed_PPI_csv=sh_embed_PPI_csv,
-        sh_embed_seq_npy=sh_embed_seq_npy,
-        sh_embed_seq_pkl=sh_embed_seq_pkl
+        sh_seq_emb_npy=sh_embed_seq_npy,
+        sh_seq_emb_pkl=sh_embed_seq_pkl
     )
 
     inference_loader = DataLoader(
