@@ -1,6 +1,6 @@
-# AetherCell enables transferable modeling of perturbation responses across biological systems​
+# AetherCell enables cross-platform transfer of perturbation responses to diverse transcriptomic contexts​
 
-> Repository accompanying *AetherCell enables transferable modeling of perturbation responses across biological systems​*.
+> Repository accompanying *AetherCell enables cross-platform transfer of perturbation responses to diverse transcriptomic contexts*.
 
 [![Python](https://img.shields.io/badge/Python-3.10-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange.svg)](https://pytorch.org/)
