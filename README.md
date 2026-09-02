@@ -75,8 +75,7 @@ Three built-in Skills are provided:
 Each Skill automates model loading, inference, and result formatting. The Skills are distributed inside `aethercell-drug-discovery-v1.0.0/.claude/skills/` in the Hugging Face package. This repository also carries a small checksum-guarded source patch so the pinned release is upgraded reproducibly after extraction without duplicating any model weights.
 
 Cell context is never synthesized. Transcriptome and IC50 Skills require a real
-10085-gene RNA profile; L1000 prediction additionally requires the matched
-978-gene control profile. The `cell_line` string is metadata, not a data loader.
+10085-gene RNA profile. The `cell_line` string is metadata, not a data loader.
 When no profile is supplied, the Agent must request one or explicitly use the
 bundled public-data-derived A549 smoke-test context.
 
