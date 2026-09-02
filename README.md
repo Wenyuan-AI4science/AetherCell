@@ -40,7 +40,7 @@ AetherCell provides four complementary ways to use the models.
 
 ### Mode 1 — Web demo
 
-The fastest way to test the drug-screening pipeline is [http://101.32.8.25/](http://101.32.8.25/). The demo runs AetherCell's screening pipeline with an LLM-generated interpretive report. Daily API quota is limited.
+The easiest way to use **AC-DR (AetherCell-DrugRepurposing)**, the Mixture-of-Experts drug-repurposing system described in Result 5, is the [web demo](http://101.32.8.25/). Select a disease or upload a matched control/disease transcriptome to obtain a ranked drug list integrating graph-neural-network evidence with AetherCell virtual-perturbation predictions; an LLM then turns the ranked results into concise rationales and testable hypotheses. Daily API quota is limited.
 
 ### Mode 2 — Agent Skills via Claude Code
 
