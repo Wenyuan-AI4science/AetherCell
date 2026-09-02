@@ -33,7 +33,7 @@ Use this skill when the user asks about:
 **Mixture-of-Experts Architecture**:
 1. **Transcriptome Expert (TE)**:
    - Compares disease expression profile with drug-induced expression changes
-   - Higher score = drug expression more similar to disease state
+   - Higher score = the predicted drug perturbation is more closely aligned with reversal of the disease state towards the matched control state
 
 2. **Knowledge Graph Expert (KG)**:
    - Uses graph neural network (GNN) embeddings

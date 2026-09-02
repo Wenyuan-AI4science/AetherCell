@@ -47,8 +47,11 @@ FILES = {
         "patched": "bc15a510aa61bc3e3efc8513ab1bda4e526d331c9669775c60148f8a5782c9de",
     },
     ".claude/skills/drug-repurposing/SKILL.md": {
-        "accepted": ["2ad66866346e8d113701902727a620aa475904c580a6be6a648bd1e8154809c8"],
-        "patched": "f33dd1a52a6880d45b97a0cc13db1710107d5f57ce677bbc81e6ce54132c84cf",
+        "accepted": [
+            "2ad66866346e8d113701902727a620aa475904c580a6be6a648bd1e8154809c8",
+            "f33dd1a52a6880d45b97a0cc13db1710107d5f57ce677bbc81e6ce54132c84cf",
+        ],
+        "patched": "73ce4e13ba8b5298387ae7584286eab8cfb495953d572966249c8fbbe870b349",
     },
 }
 EXAMPLE_TARGET = "examples/api_context_examples.npz"
