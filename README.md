@@ -30,8 +30,6 @@ AetherCell is a generative modelling framework that aligns context-rich bulk RNA
 
 Beyond a static model release, AetherCell is provided as an **Agent-Ready model toolkit**. Here, *Agent-Ready* means that its scientific capabilities are exposed through documented, machine-callable interfaces with validated input contracts, structured outputs and explicit failure handling, allowing them to be incorporated as tools within larger agent systems. The released package includes Python APIs, command-line entry points and ready-made Skills for natural-language invocation in Claude Code.
 
-The reviewer-facing training, download, batch-inference, and benchmark additions documented later in this README supplement the Agent-Ready release; they do not replace it.
-
 For architecture details, training objectives, and benchmark results, please refer to the manuscript.
 
 ## Access modes
