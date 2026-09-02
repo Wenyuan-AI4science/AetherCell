@@ -72,7 +72,13 @@ Three built-in Skills are provided:
 - **IC50 Prediction** — drug sensitivity on cancer cell lines.
 - **Drug Repurposing** — disease-centric candidate ranking.
 
-Each Skill automates model loading, inference, and result formatting. The Skills are distributed inside `aethercell-drug-discovery-v1.0.0/.claude/skills/` in the Hugging Face package rather than duplicated in this lightweight Git repository.
+Each Skill automates model loading, inference, and result formatting. The Skills are distributed inside `aethercell-drug-discovery-v1.0.0/.claude/skills/` in the Hugging Face package. This repository also carries a small checksum-guarded source patch so the pinned release is upgraded reproducibly after extraction without duplicating any model weights.
+
+Cell context is never synthesized. Transcriptome and IC50 Skills require a real
+10085-gene RNA profile; L1000 prediction additionally requires the matched
+978-gene control profile. The `cell_line` string is metadata, not a data loader.
+When no profile is supplied, the Agent must request one or explicitly use the
+bundled public-data-derived A549 smoke-test context.
 
 ### Mode 3 — Python API
 
@@ -81,7 +87,10 @@ For programmatic use, batch experiments, and integration into custom pipelines, 
 #### Transcriptome prediction
 
 ```python
+import numpy as np
 from models.transcriptome_prediction.transcriptome_inference import TranscriptomePredictor
+
+context = np.load("examples/api_context_examples.npz", allow_pickle=False)
 
 predictor = TranscriptomePredictor(
     model_type="l1000",        # "l1000" (978 genes) or "bulk_rnaseq" (10085 genes)
@@ -90,7 +99,9 @@ predictor = TranscriptomePredictor(
 )
 result = predictor.predict(
     drug_smiles="CC(=O)Oc1ccccc1C(=O)O",
-    cell_line="MCF7",
+    cell_line=str(context["cell_id"][0]),
+    custom_expression=context["rna"][0],       # real 10085-gene A549 profile
+    control_expression=context["control"][0], # matched real 978-gene control
 )
 
 # result["expression"] — predicted expression array
@@ -101,12 +112,16 @@ result = predictor.predict(
 #### Drug response prediction
 
 ```python
+import numpy as np
 from models.ic50_prediction.ic50_inference import IC50Predictor
+
+context = np.load("examples/api_context_examples.npz", allow_pickle=False)
 
 predictor = IC50Predictor(device="cpu")
 result = predictor.predict(
     drug_smiles="CC(C)Cc1ccc(cc1)C(C)C(O)=O",
-    cell_line="A549",
+    cell_line=str(context["cell_id"][0]),
+    custom_expression=context["rna"][0],
 )
 print(result["prediction"])
 print(result["probability"])
@@ -216,21 +231,35 @@ python scripts/download_models.py --extract --keep-archive --output-dir models
 
 Use `--metadata-only` first to validate the live 4.0 GB package entry without downloading it.
 
-The script downloads `liwenyuan99/AetherCell/aethercell-drug-discovery-v1.0.0.zip`, verifies its pinned 4,027,434,886-byte size and SHA-256, and then extracts it. Model checkpoints are loaded with `weights_only=True`; AC-DR is a released TorchScript model and is loaded with `torch.jit.load`.
+The script downloads `liwenyuan99/AetherCell/aethercell-drug-discovery-v1.0.0.zip`, verifies its pinned 4,027,434,886-byte size and SHA-256, extracts it, and applies the repository's checksum-guarded Agent-Ready patch. That patch removes the historical random-cell fallbacks from the transcriptome and IC50 APIs and Skills, freezes MolFormer's random-feature maps during evaluation, and installs `examples/api_context_examples.npz`. It refuses to overwrite files that do not match the pinned release or a known earlier patch revision.
+
+If the Hugging Face archive was extracted manually, apply and verify the same patch:
+
+```bash
+python scripts/apply_agent_ready_patch.py \
+  --package-dir models/aethercell-drug-discovery-v1.0.0
+```
+
+Successful application writes `agent_ready_patch_manifest.json` inside the model package. Model checkpoints are loaded with `weights_only=True`; AC-DR is a released TorchScript model and is loaded with `torch.jit.load`.
 
 ## Train AetherCell with the specificity-aware loss
 
 The released objective is
 
 ```text
-L = w.reconstruction * L_reconstruction
-  + w.directional * L_top-k-direction
-  + w.weighted_mse * L_delta-weighted-MSE
-  + w.latent_alignment * L_latent-alignment
-  + w.specificity * L_specificity
+L = 0.5 L_reconstruction
+  + 2.0 L_top-k-direction
+  + 0.3 L_delta-weighted-MSE
+  + 0.2 L_latent-alignment
+  + 0.2 L_specificity
 ```
 
 `L_specificity` is a margin loss. The predicted latent displacement must be closer to the true perturbation displacement than a context-only mean displacement. References are computed from the training split only. The implementation removes the current sample from its cell-specific mean; cells with one training observation fall back to the global training mean. This prevents self-inclusion leakage while retaining the reported context-specificity principle.
+
+Specificity is strictly a **training regularizer**. Validation does not construct,
+query, or report specificity and never uses a training cell mean. Its `val_loss`
+contains only reconstruction, top-k direction, delta-weighted MSE, and latent
+alignment; all ordinary validation metrics continue to be computed.
 
 Run drug training on the official split:
 
@@ -335,6 +364,7 @@ environment.yml                  conda environment specification
 pyproject.toml                   installable CLI/package configuration
 scripts/                         verified data/model downloaders and smoke test
 examples/data/                   small real model-output tables
+patches/agent_ready/             deterministic-input API and Agent Skill patch
 tests/                           loss, training, data, doctor, and benchmark tests
 
 # Downloaded separately from Hugging Face and placed under models/:

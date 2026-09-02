@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download pinned AetherCell model assets from Hugging Face."""
+"""Download pinned models and apply the reviewed deterministic-input API patch."""
 
 from __future__ import annotations
 
@@ -85,6 +85,10 @@ def main(argv=None) -> int:
     print(f"verified {package.name}: sha256={actual}")
     if args.extract:
         safe_extract(package, args.output_dir)
+        from apply_agent_ready_patch import apply_patch
+
+        report = apply_patch(args.output_dir)
+        print(f"applied Agent-Ready patch: {report['patch_version']}")
         if not args.keep_archive:
             package.unlink()
     return 0

@@ -11,6 +11,7 @@ def test_doctor_explains_external_asset_recovery(tmp_path: Path, capsys):
         "pyproject.toml",
         "scripts/download_data.py",
         "scripts/download_models.py",
+        "scripts/apply_agent_ready_patch.py",
         "scripts/reviewer_smoke_test.py",
         "src/aethercell/train.py",
         "src/aethercell/batch_inference.py",

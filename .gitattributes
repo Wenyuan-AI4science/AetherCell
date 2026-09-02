@@ -1,0 +1,3 @@
+# Patch hashes are byte-exact and must not vary with the reviewer's platform.
+patches/agent_ready/** text eol=lf
+examples/data/*.npz binary

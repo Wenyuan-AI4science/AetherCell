@@ -149,6 +149,34 @@ class LossWeights:
     specificity: float = 0.2
 
 
+def _core_loss_parts(
+    *,
+    prediction: torch.Tensor,
+    target: torch.Tensor,
+    control: torch.Tensor,
+    delta_z_pred: torch.Tensor,
+    delta_z_true: torch.Tensor,
+    top_k: int,
+) -> dict[str, torch.Tensor]:
+    delta_true = target - control
+    delta_pred = prediction - control
+    return {
+        "reconstruction": F.l1_loss(prediction, target),
+        "directional": topk_directional_loss(delta_pred, delta_true, top_k),
+        "weighted_mse": delta_weighted_mse(prediction, target, control),
+        "latent_alignment": F.mse_loss(delta_z_pred, delta_z_true),
+    }
+
+
+def _weighted_core_total(parts: Mapping[str, torch.Tensor], weights: LossWeights) -> torch.Tensor:
+    return (
+        weights.reconstruction * parts["reconstruction"]
+        + weights.directional * parts["directional"]
+        + weights.weighted_mse * parts["weighted_mse"]
+        + weights.latent_alignment * parts["latent_alignment"]
+    )
+
+
 class AetherCellLoss(nn.Module):
     """Complete reconstruction + direction + magnitude + alignment + specificity objective."""
 
@@ -175,21 +203,48 @@ class AetherCellLoss(nn.Module):
         delta_z_true: torch.Tensor,
         cell_ids: Sequence[object],
     ) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
-        delta_true = target - control
-        delta_pred = prediction - control
-        parts = {
-            "reconstruction": F.l1_loss(prediction, target),
-            "directional": topk_directional_loss(delta_pred, delta_true, self.top_k),
-            "weighted_mse": delta_weighted_mse(prediction, target, control),
-            "latent_alignment": F.mse_loss(delta_z_pred, delta_z_true),
-            "specificity": self.specificity(delta_z_pred, delta_z_true, cell_ids),
-        }
-        w = self.weights
-        total = (
-            w.reconstruction * parts["reconstruction"]
-            + w.directional * parts["directional"]
-            + w.weighted_mse * parts["weighted_mse"]
-            + w.latent_alignment * parts["latent_alignment"]
-            + w.specificity * parts["specificity"]
+        parts = _core_loss_parts(
+            prediction=prediction,
+            target=target,
+            control=control,
+            delta_z_pred=delta_z_pred,
+            delta_z_true=delta_z_true,
+            top_k=self.top_k,
         )
+        parts["specificity"] = self.specificity(delta_z_pred, delta_z_true, cell_ids)
+        w = self.weights
+        total = _weighted_core_total(parts, w) + w.specificity * parts["specificity"]
         return total, parts
+
+
+class AetherCellValidationLoss(nn.Module):
+    """Validation objective that deliberately excludes specificity.
+
+    Specificity is a training regularizer. Validation reports the remaining
+    reconstruction, direction, magnitude, and latent-alignment terms without
+    constructing or querying a specificity reference.
+    """
+
+    def __init__(self, weights: LossWeights | None = None, top_k: int = 200):
+        super().__init__()
+        self.weights = weights or LossWeights()
+        self.top_k = int(top_k)
+
+    def forward(
+        self,
+        *,
+        prediction: torch.Tensor,
+        target: torch.Tensor,
+        control: torch.Tensor,
+        delta_z_pred: torch.Tensor,
+        delta_z_true: torch.Tensor,
+    ) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
+        parts = _core_loss_parts(
+            prediction=prediction,
+            target=target,
+            control=control,
+            delta_z_pred=delta_z_pred,
+            delta_z_true=delta_z_true,
+            top_k=self.top_k,
+        )
+        return _weighted_core_total(parts, self.weights), parts

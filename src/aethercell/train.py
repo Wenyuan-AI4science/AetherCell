@@ -14,7 +14,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, random_split
 
 from .data import PerturbationNPZDataset, ZenodoDrugDataset
-from .losses import AetherCellLoss, LossWeights, SpecificityReference
+from .losses import AetherCellLoss, AetherCellValidationLoss, LossWeights, SpecificityReference
 from .model_io import build_drug_model, trainable_parameters
 
 
@@ -53,9 +53,27 @@ def latent_reference(model: nn.Module, loader: DataLoader, device: torch.device)
     return SpecificityReference.from_batches(batches)
 
 
+def build_objectives(
+    reference: SpecificityReference,
+    weights: LossWeights,
+    top_k: int,
+    specificity_margin: float,
+) -> tuple[AetherCellLoss, AetherCellValidationLoss]:
+    """Return the specificity-aware training and specificity-free validation objectives."""
+    training = AetherCellLoss(
+        reference,
+        weights,
+        top_k,
+        specificity_margin,
+        leave_one_out=True,
+    )
+    validation = AetherCellValidationLoss(weights, top_k)
+    return training, validation
+
+
 def _forward_loss(
     model: nn.Module,
-    objective: AetherCellLoss,
+    objective: AetherCellLoss | AetherCellValidationLoss,
     batch: dict[str, object],
     device: torch.device,
 ) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
@@ -68,20 +86,22 @@ def _forward_loss(
     with torch.no_grad():
         _, target_mu, _ = _encoder(model)(target)
         delta_z_true = (target_mu - z_base).detach()
-    return objective(
+    arguments = dict(
         prediction=prediction,
         target=target,
         control=control,
         delta_z_pred=delta_z_pred,
         delta_z_true=delta_z_true,
-        cell_ids=list(batch["cell_id"]),
     )
+    if isinstance(objective, AetherCellLoss):
+        arguments["cell_ids"] = list(batch["cell_id"])
+    return objective(**arguments)
 
 
 def run_epoch(
     model: nn.Module,
     loader: DataLoader,
-    objective: AetherCellLoss,
+    objective: AetherCellLoss | AetherCellValidationLoss,
     device: torch.device,
     optimizer: torch.optim.Optimizer | None,
     max_grad_norm: float,
@@ -243,7 +263,12 @@ def main(argv: list[str] | None = None) -> int:
         args.lambda_latent_alignment,
         args.lambda_specificity,
     )
-    objective = AetherCellLoss(reference, weights, args.top_k, args.specificity_margin)
+    training_objective, validation_objective = build_objectives(
+        reference,
+        weights,
+        args.top_k,
+        args.specificity_margin,
+    )
     optimizer = torch.optim.AdamW(trainable_parameters(model), lr=args.learning_rate, weight_decay=args.weight_decay)
     log_path = args.output_dir / "training_log.csv"
     best = float("inf")
@@ -251,8 +276,8 @@ def main(argv: list[str] | None = None) -> int:
     with log_path.open("w", newline="", encoding="utf-8") as handle:
         writer = None
         for epoch in range(1, args.epochs + 1):
-            train_metrics = run_epoch(model, train_loader, objective, device, optimizer, args.max_grad_norm)
-            val_metrics = run_epoch(model, val_loader, objective, device, None, args.max_grad_norm)
+            train_metrics = run_epoch(model, train_loader, training_objective, device, optimizer, args.max_grad_norm)
+            val_metrics = run_epoch(model, val_loader, validation_objective, device, None, args.max_grad_norm)
             row = {"epoch": epoch, **{f"train_{k}": v for k, v in train_metrics.items()}, **{f"val_{k}": v for k, v in val_metrics.items()}}
             if writer is None:
                 fieldnames = list(row)

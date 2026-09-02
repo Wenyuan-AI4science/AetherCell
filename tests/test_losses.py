@@ -1,6 +1,13 @@
 import torch
 
-from aethercell.losses import AetherCellLoss, SpecificityReference, topk_directional_loss
+from aethercell.losses import (
+    AetherCellLoss,
+    AetherCellValidationLoss,
+    LossWeights,
+    SpecificityReference,
+    topk_directional_loss,
+)
+from aethercell.train import build_objectives
 
 
 def test_directional_loss_is_zero_for_identical_changes():
@@ -15,6 +22,25 @@ def test_specificity_reference_uses_leave_one_out_and_global_fallback():
     assert torch.allclose(background[0], deltas[1])
     assert torch.allclose(background[1], deltas[0])
     assert torch.allclose(background[2], deltas.mean(0))
+
+
+def test_validation_does_not_construct_or_call_specificity():
+    train_deltas = torch.tensor([[1.0], [3.0]])
+    reference = SpecificityReference.from_batches([(train_deltas, ["A", "A"])])
+    training, validation = build_objectives(reference, LossWeights(), 1, 0.1)
+    assert training.specificity.leave_one_out is True
+    assert isinstance(validation, AetherCellValidationLoss)
+    assert not hasattr(validation, "specificity")
+    prediction = torch.tensor([[1.0, 2.0]], requires_grad=True)
+    total, parts = validation(
+        prediction=prediction,
+        target=torch.tensor([[1.5, 1.5]]),
+        control=torch.zeros(1, 2),
+        delta_z_pred=torch.tensor([[0.2, 0.4]], requires_grad=True),
+        delta_z_true=torch.tensor([[0.1, 0.5]]),
+    )
+    assert torch.isfinite(total)
+    assert set(parts) == {"reconstruction", "directional", "weighted_mse", "latent_alignment"}
 
 
 def test_complete_objective_backpropagates():

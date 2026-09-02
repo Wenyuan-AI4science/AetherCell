@@ -1,4 +1,5 @@
 from pathlib import Path
+import csv
 
 import numpy as np
 
@@ -22,6 +23,17 @@ def test_training_smoke(tmp_path: Path):
     assert main(["--smoke-test", "--output-dir", str(output)]) == 0
     assert (output / "best_model.pt").is_file()
     assert (output / "training_log.csv").is_file()
+    with (output / "training_log.csv").open(newline="", encoding="utf-8") as handle:
+        columns = next(csv.DictReader(handle)).keys()
+    assert "train_specificity" in columns
+    assert "val_specificity" not in columns
+    assert {
+        "val_loss",
+        "val_reconstruction",
+        "val_directional",
+        "val_weighted_mse",
+        "val_latent_alignment",
+    }.issubset(columns)
 
 
 def test_shrna_npz_dataset(tmp_path: Path):

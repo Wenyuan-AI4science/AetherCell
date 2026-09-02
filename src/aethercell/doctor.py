@@ -16,17 +16,21 @@ CORE_PROJECT_FILES = [
     "pyproject.toml",
     "scripts/download_data.py",
     "scripts/download_models.py",
+    "scripts/apply_agent_ready_patch.py",
     "scripts/reviewer_smoke_test.py",
     "src/aethercell/train.py",
     "src/aethercell/batch_inference.py",
     "src/aethercell/losses.py",
 ]
 MODEL_FILES = [
+    "agent_ready_patch_manifest.json",
     "models/transcriptome_prediction/L1000_vae.pt",
     "models/transcriptome_prediction/RNA_vae.pt",
     "models/transcriptome_prediction/predictor_L_drug.pt",
     "models/transcriptome_prediction/predictor_L_sh.pt",
     "models/transcriptome_prediction/molformer",
+    "models/ic50_prediction/ic50_inference.py",
+    "models/ic50_prediction/ddp_predictor.pt",
     "models/moe_repurposing/standalone_expert_model.pt",
     "models/moe_repurposing/data_sub/static_data.h5",
 ]
@@ -131,6 +135,7 @@ def main(argv: list[str] | None = None) -> int:
             print("  Download: python scripts/download_models.py --metadata-only")
             print("  Install:  python scripts/download_models.py --extract --output-dir models")
             print("  Source:   https://huggingface.co/liwenyuan99/AetherCell")
+            print("  Existing manual extraction: python scripts/apply_agent_ready_patch.py --package-dir <package>")
         else:
             print("[OK] Core drug, shRNA, AC-RP and AC-DR model assets are present.")
         if report["missing_data_files"]:

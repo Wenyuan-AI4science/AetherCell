@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+
+results/
+data/zenodo/
+/models/
+*.part
+
+.idea/
+.vscode/
+.DS_Store
