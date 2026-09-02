@@ -223,11 +223,11 @@ The script downloads `liwenyuan99/AetherCell/aethercell-drug-discovery-v1.0.0.zi
 The released objective is
 
 ```text
-L = 0.5 L_reconstruction
-  + 2.0 L_top-k-direction
-  + 0.3 L_delta-weighted-MSE
-  + 0.2 L_latent-alignment
-  + 0.2 L_specificity
+L = w.reconstruction * L_reconstruction
+  + w.directional * L_top-k-direction
+  + w.weighted_mse * L_delta-weighted-MSE
+  + w.latent_alignment * L_latent-alignment
+  + w.specificity * L_specificity
 ```
 
 `L_specificity` is a margin loss. The predicted latent displacement must be closer to the true perturbation displacement than a context-only mean displacement. References are computed from the training split only. The implementation removes the current sample from its cell-specific mean; cells with one training observation fall back to the global training mean. This prevents self-inclusion leakage while retaining the reported context-specificity principle.
