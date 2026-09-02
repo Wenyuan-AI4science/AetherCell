@@ -6,10 +6,12 @@ import os
 import glob
 from tqdm import tqdm
 import h5py
-import pickle
+from pathlib import Path
 from transformers import AutoTokenizer
 import torch
 from torch.utils.data import Dataset
+
+from aethercell.data import safe_load_mapping
 
 class CustomHDF5Dataset(Dataset):
     def __init__(self, h5_file):
@@ -75,7 +77,7 @@ class DDPDataset(Dataset):
         arr_attention = np.load(drug_attention_mask_npy, mmap_mode='r')# (N_drug, 160)
         self.drug_input_ids = torch.from_numpy(arr_input_ids.astype(np.int64))        # (N_drug, 160)
         self.drug_attention_mask = torch.from_numpy(arr_attention.astype(np.int64))   # (N_drug, 160)
-        self.drug_idx_map = pickle.load(open(drug_idx_map_path, "rb"))  # { pert_id: idx }
+        self.drug_idx_map = safe_load_mapping(drug_idx_map_path)  # { pert_id: idx }
     def __len__(self):
         return len(self.meta)
     def __getitem__(self, index):
@@ -103,7 +105,7 @@ class DDPDataset_ic50(Dataset):
         arr_attention = np.load(drug_attention_mask_npy, mmap_mode='r')# (N_drug, 160)
         self.drug_input_ids = torch.from_numpy(arr_input_ids.astype(np.int64))        # (N_drug, 160)
         self.drug_attention_mask = torch.from_numpy(arr_attention.astype(np.int64))   # (N_drug, 160)
-        self.drug_idx_map = pickle.load(open(drug_idx_map_path, "rb"))  # { pert_id: idx }
+        self.drug_idx_map = safe_load_mapping(drug_idx_map_path)  # { pert_id: idx }
     def __len__(self):
         return len(self.meta)
     def __getitem__(self, index):
@@ -198,14 +200,23 @@ class PretrainDataset(Dataset):
     
 
 class PretrainDataset_control(Dataset):
-    def __init__(self, meta_csv, LINCS_pkl):
+    def __init__(self, meta_csv, LINCS_table):
         self.meta = pd.read_csv(meta_csv)
-        with open(LINCS_pkl, 'rb') as f:
-            lincs_df = pickle.load(f)  # Original DataFrame
-            self.LINCS_dict = {
-                idx: np.array(lincs_df.loc[idx], dtype=np.float32)
-                for idx in lincs_df.index
-            }
+        table_path = Path(LINCS_table)
+        if table_path.suffix.lower() == ".parquet":
+            lincs_df = pd.read_parquet(table_path)
+        elif table_path.suffix.lower() in {".csv", ".tsv"}:
+            separator = "\t" if table_path.suffix.lower() == ".tsv" else ","
+            lincs_df = pd.read_csv(table_path, sep=separator, index_col=0)
+        else:
+            raise ValueError(
+                "LINCS_table must be a safe .parquet, .csv, or .tsv file. "
+                "Legacy DataFrame pickle loading was removed because pickle can execute arbitrary code."
+            )
+        self.LINCS_dict = {
+            str(idx): np.asarray(lincs_df.loc[idx], dtype=np.float32)
+            for idx in lincs_df.index
+        }
     def __len__(self):
         return len(self.meta)
     def __getitem__(self, index):
@@ -234,8 +245,8 @@ class PredictorDatasetDP2_sh(Dataset):
         self.L1000_exp = np.load(L1000_exp_npy, mmap_mode='r').astype(np.float32)   # (N_exp, 978)
         self.L1000_ctrl = np.load(L1000_ctrl_npy, mmap_mode='r').astype(np.float32) # (N_ctrl, 978)
         # 3. Read index mapping (directly use dict lookup)
-        self.exp_idx_map = pickle.load(open(exp_idx_map_path, "rb"))   # { sample_id: row_in_L1000_exp }
-        self.ctrl_idx_map = pickle.load(open(ctrl_idx_map_path, "rb")) # { sample_id: row_in_L1000_ctrl }
+        self.exp_idx_map = safe_load_mapping(exp_idx_map_path)   # { sample_id: row_in_L1000_exp }
+        self.ctrl_idx_map = safe_load_mapping(ctrl_idx_map_path) # { sample_id: row_in_L1000_ctrl }
         # 4. Read RNAseq parquet -> convert to NumPy first and cache column name -> index
         df_RNA = pd.read_parquet(RNA_parquet_path)  # Assume rows are genes, columns are cell_iname, shape (G, C)
         #    G = number of genes, C = number of different cell_iname
@@ -253,7 +264,7 @@ class PredictorDatasetDP2_sh(Dataset):
         self.sh_PPI_embedding_dim = self.sh_PPI_arr.shape[1]
         del df_sh_PPI
         self.sh_seq  = np.load(sh_seq_emb_npy)
-        self.sh_seq_id2idx = pd.read_pickle(sh_seq_emb_pkl)
+        self.sh_seq_id2idx = safe_load_mapping(sh_seq_emb_pkl)
     def __len__(self):
         return len(self.meta)
 
@@ -314,8 +325,8 @@ class PredictorDatasetDP2(Dataset):
         self.L1000_ctrl = np.load(L1000_ctrl_npy, mmap_mode='r').astype(np.float32) # (N_ctrl, 978)
 
         # 3. Read index mapping (directly use dict lookup)
-        self.exp_idx_map = pickle.load(open(exp_idx_map_path, "rb"))   # { sample_id: row_in_L1000_exp }
-        self.ctrl_idx_map = pickle.load(open(ctrl_idx_map_path, "rb")) # { sample_id: row_in_L1000_ctrl }
+        self.exp_idx_map = safe_load_mapping(exp_idx_map_path)   # { sample_id: row_in_L1000_exp }
+        self.ctrl_idx_map = safe_load_mapping(ctrl_idx_map_path) # { sample_id: row_in_L1000_ctrl }
 
         # 4. Read RNAseq parquet -> convert to NumPy first and cache column name -> index
         df_RNA = pd.read_parquet(RNA_parquet_path)  # Assume rows are genes, columns are cell_iname, shape (G, C)
@@ -330,7 +341,7 @@ class PredictorDatasetDP2(Dataset):
         # If GPU memory allows, directly convert to Tensor and cache in memory for direct indexing; otherwise keep as NumPy but ensure np.int64 / np.int32
         self.drug_input_ids = torch.from_numpy(arr_input_ids.astype(np.int64))        # (N_drug, 160)
         self.drug_attention_mask = torch.from_numpy(arr_attention.astype(np.int64))   # (N_drug, 160)
-        self.drug_idx_map = pickle.load(open(drug_idx_map_path, "rb"))  # { pert_id: idx }
+        self.drug_idx_map = safe_load_mapping(drug_idx_map_path)  # { pert_id: idx }
 
     def __len__(self):
         return len(self.meta)
@@ -403,7 +414,7 @@ class PredictorDatasetDP2_sh_i(Dataset):
         # 2. Read L1000 (directly convert to float32)
         self.L1000_ctrl = np.load(L1000_ctrl_npy, mmap_mode='r').astype(np.float32) # (N_ctrl, 978)
         # 3. Read index mapping (directly use dict lookup)
-        self.ctrl_idx_map = pickle.load(open(ctrl_idx_map_path, "rb")) # { sample_id: row_in_L1000_ctrl }
+        self.ctrl_idx_map = safe_load_mapping(ctrl_idx_map_path) # { sample_id: row_in_L1000_ctrl }
         # 4. Read RNAseq parquet -> convert to NumPy first and cache column name -> index
         df_RNA = pd.read_parquet(RNA_parquet_path)  # Assume rows are genes, columns are cell_iname, shape (G, C)
         #    G = number of genes, C = number of different cell_iname
@@ -421,7 +432,7 @@ class PredictorDatasetDP2_sh_i(Dataset):
         self.sh_PPI_embedding_dim = self.sh_PPI_arr.shape[1]
         del df_sh_PPI
         self.sh_seq  = np.load(sh_seq_emb_npy)
-        self.sh_seq_id2idx = pd.read_pickle(sh_seq_emb_pkl)
+        self.sh_seq_id2idx = safe_load_mapping(sh_seq_emb_pkl)
     def __len__(self):
         return len(self.meta)
 
@@ -467,7 +478,7 @@ class PredictorDatasetDP2_i(Dataset):
                  drug_idx_map_path,):
         self.meta = pd.read_csv(meta_csv, engine="python")
         self.L1000_ctrl = np.load(L1000_ctrl_npy, mmap_mode='r').astype(np.float32) # (N_ctrl, 978)
-        self.ctrl_idx_map = pickle.load(open(ctrl_idx_map_path, "rb")) # { sample_id: row_in_L1000_ctrl }
+        self.ctrl_idx_map = safe_load_mapping(ctrl_idx_map_path) # { sample_id: row_in_L1000_ctrl }
         df_RNA = pd.read_parquet(RNA_parquet_path)  # Assume rows are genes, columns are cell_iname, shape (G, C)
         #    G = number of genes, C = number of different cell_iname
         self.RNA_arr = df_RNA.values.astype(np.float32)   # shape (G, C)
@@ -480,7 +491,7 @@ class PredictorDatasetDP2_i(Dataset):
         # If GPU memory allows, directly convert to Tensor and cache in memory for direct indexing; otherwise keep as NumPy but ensure np.int64 / np.int32
         self.drug_input_ids = torch.from_numpy(arr_input_ids.astype(np.int64))        # (N_drug, 160)
         self.drug_attention_mask = torch.from_numpy(arr_attention.astype(np.int64))   # (N_drug, 160)
-        self.drug_idx_map = pickle.load(open(drug_idx_map_path, "rb"))  # { pert_id: idx }
+        self.drug_idx_map = safe_load_mapping(drug_idx_map_path)  # { pert_id: idx }
 
     def __len__(self):
         return len(self.meta)
@@ -596,7 +607,7 @@ class PredictorDataset_R_sh_i(Dataset):
         self.sh_PPI_embedding_dim = self.sh_PPI_arr.shape[1]
         del df_sh_PPI
         self.sh_seq  = np.load(sh_seq_emb_npy)
-        self.sh_seq_id2idx = pd.read_pickle(sh_seq_emb_pkl)
+        self.sh_seq_id2idx = safe_load_mapping(sh_seq_emb_pkl)
     def __len__(self):
         return len(self.meta)
 

@@ -1,220 +1,146 @@
-# AetherCell — src Inference Scripts
+# Portable batch inference
 
-This directory contains the **batch inference scripts** for AetherCell.
-They are intended for large-scale prediction on custom datasets, as opposed to the
-single-sample API in `aethercell-drug-discovery-v1.0.0/`.
+The historical inference scripts have been retained as compatibility entry points, but they no longer contain workstation or server paths. All three delegate to the tested `aethercell-batch-infer` command.
 
----
+They retain the original scientific roles while sharing one portable CLI:
 
-## Scripts Overview
+| Script | Perturbation | Primary scientific output |
+|---|---|---|
+| `inference_delta_z.py` | Drug | 256-dimensional latent displacement vectors for similarity, clustering, and downstream modelling |
+| `inference_perturbed_expression.py` | Drug | 978-dimensional post-treatment L1000 expression and change from control |
+| `inference_knockdown_perturbed.py` | shRNA knockdown | 978-dimensional post-knockdown L1000 expression and change from control |
+| `aethercell_delta_z_inference.ipynb` | Drug or shRNA | Interactive delta-z inference, inspection, and optional PCA visualisation |
 
-| Script | Perturbation | Output |
-|--------|-------------|--------|
-| `inference_delta_z.py` | Drug (compound) | 256-dim latent delta_z vectors |
-| `inference_perturbed_expression.py` | Drug (compound) | 978-dim predicted post-treatment L1000 expression |
-| `inference_knockdown_perturbed.py` | shRNA knockdown | 978-dim predicted post-knockdown L1000 expression |
-| `aethercell_delta_z_inference.ipynb` | Drug **or** shRNA × L1000 **or** RNAseq control | 256-dim delta_z vectors (all four mode combinations) |
+The notebook continues to document four combinations: drug × L1000 control,
+drug × RNA-seq control, shRNA × L1000 control, and shRNA × RNA-seq control.
+The command-line workflow below is the tested path for reviewer reproduction.
 
-### `inference_delta_z.py`
-Loads a trained drug perturbation model and encodes each (drug, cell line) pair
-into a 256-dimensional **delta_z** vector — the directional shift in latent space
-caused by the drug perturbation. Useful for drug similarity analysis, clustering,
-and as features for downstream tasks (e.g. IC50 prediction).
-
-**Outputs saved to `../result/delta_z/`:**
-- `delta_z_predictions.npy` — raw array of shape `(N_samples, 256)`
-- `delta_z_predictions.csv` — metadata + all 256 delta_z columns
-
-### `inference_perturbed_expression.py`
-Generates the predicted **post-treatment L1000 gene expression profile** (978 genes)
-for each (drug, cell line) pair. Also saves control expression and the
-expression delta (perturbed − control) for downstream DEG analysis.
-
-**Outputs saved to `../result/perturbed_expression/`:**
-- `perturbed_expression.npy` — predicted post-treatment expression `(N, 978)`
-- `control_expression.npy` — input control expression `(N, 978)`
-- `delta_expression.npy` — difference `(N, 978)`
-- `metadata.csv` — sample / perturbation identifiers
-- `summary_statistics.csv` — mean, std, abs-mean of delta
-
-### `inference_knockdown_perturbed.py`
-Same output format as `inference_perturbed_expression.py`, but for **shRNA gene
-knockdown** perturbations. Uses PPI and sequence embeddings as gene representations
-instead of drug SMILES.
-
-**Outputs saved to `../result/perturbed_expression_sh/`:**
-- Same file structure as above, plus `det_plate` and `cell_id` columns in metadata.
-
-### `aethercell_delta_z_inference.ipynb`
-A self-contained Jupyter notebook that covers all four inference modes:
-
-| `PERTURBATION_MODE` | `CONTROL_SOURCE` | Description |
-|---------------------|-----------------|-------------|
-| `"drug"` | `"L1000"` | Standard drug inference with L1000 control |
-| `"drug"` | `"RNAseq"` | Drug inference using RNAseq as control (no L1000 needed) |
-| `"shrna"` | `"L1000"` | shRNA inference with L1000 control |
-| `"shrna"` | `"RNAseq"` | shRNA inference using RNAseq as control (no L1000 needed) |
-
-The notebook also includes optional PCA visualisation of the resulting delta_z
-embeddings and a utility cell for tokenising new drug SMILES on the fly.
-
----
-
-## Step 1 — Install the Environment
+Run the preflight checker first:
 
 ```bash
-conda env create -f ../environment.yml
-conda activate aethercell
+pip install -e ".[model,test]"
+aethercell-doctor
+aethercell-doctor --full   # also requires downloaded data and models
 ```
 
----
+If assets are missing, the checker prints the exact verified download commands and source URLs.
 
-## Step 2 — Download Required Files
+## Required released files
 
-### 2.1 Model Weights — Hugging Face
-
-**Repository:** [https://huggingface.co/liwenyuan99/AetherCell](https://huggingface.co/liwenyuan99/AetherCell)
-
-Download the following weight files and note where you save them.
-You will set the corresponding paths in Step 3.
-
-| File | Used by | Variable in script |
-|------|--------|-------------------|
-| LINCS VAE checkpoint (e.g. `epoch_184.pt`) | all scripts | `best_model_path_LINCSVAE` |
-| RNA VAE checkpoint (`best_model.pt`) | all scripts | `best_model_path_RNAVAE` |
-| Drug perturbation model checkpoint | `inference_delta_z.py`, `inference_perturbed_expression.py`, notebook (drug mode) | `trained_model_path` / `DRUG_MODEL_CKPT` |
-| shRNA perturbation model checkpoint | `inference_knockdown_perturbed.py`, notebook (shrna mode) | `trained_model_path` / `SHRNA_MODEL_CKPT` |
-
-The **MolFormer** tokeniser and weights are already bundled in the repository at:
-```
-aethercell-drug-discovery-v1.0.0/models/transcriptome_prediction/molformer/
-```
-Point `molformer_path` / `MOLFORMER_PATH` to that directory.
-
----
-
-### 2.2 Processed Datasets — Zenodo
-
-**Record:** [https://zenodo.org/records/18295255](https://zenodo.org/records/18295255)
-
-#### Required for drug inference scripts
-
-| File | Description | Variable in script |
-|------|------------|-------------------|
-| `RNAseq.parquet` | RNA-seq expression matrix, shape `(genes, cell_lines)` | `RNA_parquet_path` / `RNASEQ_PARQUET` |
-| `L1000_ctrl.npy` | L1000 control expression matrix, shape `(N_ctrl, 978)` | `L1000_ctrl_npy` / `L1000_CTRL_NPY` |
-| `ctrl_idx_map.pkl` | Dict mapping `control_id → row index` in `L1000_ctrl.npy` | `ctrl_idx_map_path` / `CTRL_IDX_MAP_PKL` |
-| `drug_input_ids.npy` | Pre-tokenised SMILES input IDs, shape `(N_drugs, 160)` | `drug_input_ids_npy` / `DRUG_INPUT_IDS_NPY` |
-| `drug_attention_mask.npy` | Corresponding attention masks, shape `(N_drugs, 160)` | `drug_attention_mask_npy` / `DRUG_ATTN_MASK_NPY` |
-| `drug_idx_map.pkl` | Dict mapping `pert_id → row index` in drug arrays | `drug_idx_map_path` / `DRUG_IDX_MAP_PKL` |
-| Inference metadata CSV | CSV with columns: `sample_id`, `pert_id`, `cell_iname`, `representative_control` | `inference_meta_csv` / `META_CSV` |
-
-#### Additional files for shRNA inference scripts
-
-| File | Description | Variable in script |
-|------|------------|-------------------|
-| `L1000_exp.npy` | L1000 experimental (perturbed) expression, shape `(N_exp, 978)` | `L1000_exp_npy` |
-| `exp_idx_map.pkl` | Dict mapping `sample_id → row index` in `L1000_exp.npy` | `exp_idx_map_path` |
-| `ensg_PPI_emb.csv` | PPI-based gene embeddings, indexed by Ensembl gene ID | `sh_embed_PPI_csv` / `SH_PPI_CSV` |
-| `emb_tokens_first_all.npy` | Sequence embeddings, shape `(N_genes, 1152)` | `sh_embed_seq_npy` / `SH_SEQ_NPY` |
-| `id2idx_ensg_seq2_all.pkl` | Dict mapping `gene_ensg → row index` in sequence embeddings | `sh_embed_seq_pkl` / `SH_SEQ_PKL` |
-| shRNA metadata CSV | CSV with columns: `sample_id`, `gene_ensg`, `cell_iname`, `representative_control`, `pert_type`, `det_plate` | `inference_meta_csv` / `META_CSV` |
-
-> **RNAseq-control mode (notebook only):** when `CONTROL_SOURCE = "RNAseq"`,
-> the L1000 files (`L1000_ctrl.npy`, `ctrl_idx_map.pkl`, `L1000_exp.npy`,
-> `exp_idx_map.pkl`) are **not** needed.
-
----
-
-## Step 3 — Configure Paths
-
-Open the script you want to run and edit the **Configuration** section near the
-top of `main()`. Replace every placeholder path with the actual location of the
-file on your machine.
-
-Example (drug inference):
-```python
-# Model paths
-best_model_path_LINCSVAE = "/your/path/to/epoch_184.pt"
-best_model_path_RNAVAE   = "/your/path/to/best_model.pt"
-molformer_path           = "../aethercell-drug-discovery-v1.0.0/models/transcriptome_prediction/molformer"
-trained_model_path       = "/your/path/to/drug_model/best_model.pt"
-
-# Data paths
-inference_meta_csv        = "/your/path/to/inference_meta.csv"
-L1000_ctrl_npy            = "/your/path/to/L1000_ctrl.npy"
-ctrl_idx_map_path         = "/your/path/to/ctrl_idx_map.pkl"
-RNA_parquet_path          = "/your/path/to/RNAseq.parquet"
-drug_input_ids_npy        = "/your/path/to/drug_input_ids.npy"
-drug_attention_mask_npy   = "/your/path/to/drug_attention_mask.npy"
-drug_idx_map_path         = "/your/path/to/drug_idx_map.pkl"
-
-# Output directory
-save_dir = "../result/perturbed_expression"
-```
-
-For the notebook, edit only the **USER CONFIGURATION** cell (Section 2).
-
----
-
-## Step 4 — Prepare Your Metadata CSV
-
-The metadata CSV tells the script which samples to run inference on.
-
-### Drug inference metadata
-
-Required columns:
-
-| Column | Description | Example |
-|--------|------------|---------|
-| `sample_id` | Unique identifier for this sample | `test_sample_001` |
-| `pert_id` | Drug identifier matching `drug_idx_map.pkl` | `BRD-K12345678` |
-| `cell_iname` | Cell line name matching `RNAseq.parquet` columns | `A549` |
-| `representative_control` | Control sample ID matching `ctrl_idx_map.pkl` | `ctrl_001` |
-
-### shRNA inference metadata
-
-Additional required columns:
-
-| Column | Description |
-|--------|------------|
-| `gene_ensg` | Ensembl gene ID matching embedding files (e.g. `ENSG00000141510`) |
-| `pert_type` | Perturbation type string (e.g. `trt_sh`) |
-| `det_plate` | Plate identifier |
-
----
-
-## Step 5 — Run Inference
+Download the model package from [Hugging Face](https://huggingface.co/liwenyuan99/AetherCell) and processed data from [Zenodo](https://zenodo.org/records/18295255). The repository downloaders verify the pinned size and checksum:
 
 ```bash
-cd src
-
-# Generate delta_z embeddings (drug)
-python inference_delta_z.py
-
-# Generate perturbed expression profiles (drug)
-python inference_perturbed_expression.py
-
-# Generate perturbed expression profiles (shRNA knockdown)
-python inference_knockdown_perturbed.py
+python scripts/download_models.py --extract --output-dir models
+python scripts/download_data.py --extract --output-dir data/zenodo
 ```
 
-For the notebook:
+Core model files are `L1000_vae.pt`, `RNA_vae.pt`,
+`predictor_L_drug.pt`, `predictor_L_sh.pt`, and the `molformer/` directory.
+
+The official drug layout contains:
+
+| File | Purpose |
+|---|---|
+| `RNAseq.parquet` | RNA-seq context matrix; columns are cell lines |
+| `L1000_ctrl.npy` / `ctrl_idx_map.pkl` | control expression and sample-to-row map |
+| `L1000_exp.npy` / `exp_idx_map.pkl` | perturbed expression and sample-to-row map |
+| `drug_input_ids.npy` | pre-tokenised SMILES IDs |
+| `drug_attention_mask.npy` | MolFormer attention masks |
+| `drug_idx_map.pkl` | perturbation ID to token-array row map |
+| `df_train_drug.csv` / `df_test_drug.csv` | official train/test metadata |
+
+The shRNA layout additionally contains `ensg_PPI_emb.csv`,
+`emb_tokens_first_all.npy`, `id2idx_ensg_seq2_all.pkl`, and
+`sh_meta_s1_train.csv` / `sh_meta_s1_test.csv`. Legacy index-map pickles are
+loaded by a restricted primitive-only reader, not by unrestricted `pickle.load`.
+
+## Drug inference
+
 ```bash
-jupyter notebook aethercell_delta_z_inference.ipynb
+aethercell-batch-infer \
+  --mode drug \
+  --zenodo-dir data/zenodo/data4train/data4zendo --split test \
+  --legacy-src models/aethercell-drug-discovery-v1.0.0/models/transcriptome_prediction \
+  --lincs-vae models/aethercell-drug-discovery-v1.0.0/models/transcriptome_prediction/L1000_vae.pt \
+  --rna-vae models/aethercell-drug-discovery-v1.0.0/models/transcriptome_prediction/RNA_vae.pt \
+  --molformer-dir models/aethercell-drug-discovery-v1.0.0/models/transcriptome_prediction/molformer \
+  --checkpoint models/aethercell-drug-discovery-v1.0.0/models/transcriptome_prediction/predictor_L_drug.pt \
+  --output-dir results/drug_test
 ```
 
----
+The old commands remain equivalent:
+
+```bash
+python src/inference_delta_z.py [the same arguments]
+python src/inference_perturbed_expression.py [the same arguments]
+```
+
+For backward compatibility, `inference_delta_z.py` also writes
+`delta_z_predictions.npy` and `delta_z_predictions.csv`.
+`inference_perturbed_expression.py` additionally writes the historical
+`perturbed_expression.npy`, `control_expression.npy`, `delta_expression.npy`,
+and `summary_statistics.csv` files. These are aliases/derived outputs; the
+portable files remain present.
+
+## shRNA inference
+
+```bash
+aethercell-batch-infer \
+  --mode shrna \
+  --zenodo-dir data/zenodo/data4train/data4zendo --split test \
+  --legacy-src models/aethercell-drug-discovery-v1.0.0/models/transcriptome_prediction \
+  --lincs-vae models/aethercell-drug-discovery-v1.0.0/models/transcriptome_prediction/L1000_vae.pt \
+  --rna-vae models/aethercell-drug-discovery-v1.0.0/models/transcriptome_prediction/RNA_vae.pt \
+  --checkpoint models/aethercell-drug-discovery-v1.0.0/models/transcriptome_prediction/predictor_L_sh.pt \
+  --output-dir results/shrna_test
+```
+
+Compatibility command:
+
+```bash
+python src/inference_knockdown_perturbed.py [the same arguments except --mode]
+```
+
+The shRNA compatibility command writes the same historical expression aliases
+and retains `control_id`, `cell_id`, and `det_plate` metadata when available.
+
+## Metadata contracts
+
+Official drug metadata provide `sample_id`, `pert_id`, `cell_iname`, and
+`representative_control`. Official shRNA metadata additionally provide
+`gene_ensg`, `pert_type`, and `det_plate`. Every referenced drug, cell line,
+control, or gene must occur in the corresponding released index or embedding
+table; absent identifiers fail with an explicit row-level error.
+
+For custom inputs, use the pickle-free NPZ contracts below instead of editing
+paths inside source files:
+
+| Mode | Required NPZ arrays |
+|---|---|
+| Drug | `control`, `rna`, `input_ids`, `attention_mask` |
+| shRNA | `control`, `rna`, `sh_ppi`, `sh_seq` |
+
+Both modes may include `sample_id`, `cell_id`, and `pert_id` string arrays.
+
+## Outputs
+
+Every mode writes the same row-aligned contract:
+
+```text
+predicted_expression.npy  # [samples, 978]
+predicted_delta.npy       # [samples, 978]
+predicted_delta_z.npy     # [samples, 256]
+metadata.csv              # row, sample_id, cell_id, pert_id
+```
 
 ## Troubleshooting
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `KeyError: <pert_id>` | Drug not in `drug_idx_map.pkl` | Verify all `pert_id` values in your metadata exist in the map |
-| `KeyError: <cell_iname>` | Cell line not in `RNAseq.parquet` | Check column names in the parquet file (case-sensitive) |
-| `KeyError: <control_id>` | Control not in `ctrl_idx_map.pkl` | Verify all `representative_control` values in your metadata |
-| `KeyError: <gene_ensg>` | Gene not in PPI / seq embedding files | Check `ensg_PPI_emb.csv` index and `id2idx_ensg_seq2_all.pkl` keys |
-| CUDA out of memory | Batch size too large | Reduce `batch_size` (e.g. from 256 to 64) |
-| `RuntimeError: weights_only` | Unexpected in patched scripts; use PyTorch ≥ 2.0 | All `torch.load` calls already use `weights_only=False` |
-
-> **Windows note:** if the DataLoader hangs, set `num_workers=0` in the `DataLoader` call.
+| Error | Likely cause | Resolution |
+|---|---|---|
+| Missing model or data file | Assets have not been downloaded or extracted in the expected layout | Run `aethercell-doctor --full` and use the printed verified command |
+| `KeyError` for a perturbation | ID absent from the released drug/gene index | Check `pert_id` or `gene_ensg` against the corresponding map |
+| `KeyError` for a cell line | `cell_iname` absent from `RNAseq.parquet` columns | Match names exactly, including case |
+| `KeyError` for a control | `representative_control` absent from `ctrl_idx_map.pkl` | Use an official or correctly indexed control ID |
+| CUDA out of memory | Batch size exceeds available GPU memory | Reduce `--batch-size` or use `--device cpu` |
+| Windows worker hang | Multiprocessing incompatibility | Keep `--num-workers 0` |
+| Checkpoint incompatibility | Model definitions do not match the released weights | Omit `--legacy-src` so it is inferred from `L1000_vae.pt`, or point it to the released `models/transcriptome_prediction/` directory |
