@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aethercell"
+version = "0.2.0"
+description = "Reproducible training, inference, and downstream evaluation for AetherCell"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.24",
+  "pandas>=1.5",
+  "scipy>=1.9",
+  "scikit-learn>=1.3",
+  "torch>=2.0",
+  "tqdm>=4.65",
+]
+
+[project.optional-dependencies]
+model = [
+  "h5py>=3.8",
+  "pyarrow>=10",
+  "transformers>=4.30",
+  "peft>=0.5",
+  "safetensors>=0.3",
+  "huggingface-hub>=0.16",
+]
+test = ["pytest>=7"]
+
+[project.scripts]
+aethercell-train = "aethercell.train:main"
+aethercell-batch-infer = "aethercell.batch_inference:main"
+aethercell-reproduce = "aethercell.benchmarks:main"
+aethercell-acdr = "aethercell.acdr:main"
+aethercell-doctor = "aethercell.doctor:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["aethercell*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
