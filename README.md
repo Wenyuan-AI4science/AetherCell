@@ -1,6 +1,6 @@
-# AetherCell learns transferable perturbation transitions across heterogeneous transcriptomic spaces
+# AetherCell: a generative engine for transcriptomic perturbation prediction and therapeutic discovery
 
-> Repository accompanying *AetherCell learns transferable perturbation transitions across heterogeneous transcriptomic spaces*.
+> Repository accompanying *AetherCell: a generative engine for transcriptomic perturbation prediction and therapeutic discoverys*.
 
 [![Python](https://img.shields.io/badge/Python-3.10-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange.svg)](https://pytorch.org/)
