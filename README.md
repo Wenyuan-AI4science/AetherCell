@@ -1,6 +1,6 @@
-# AetherCell: a generative engine for transcriptomic perturbation prediction and therapeutic discovery
+# AetherCell enables cross-platform transcriptomic perturbation prediction and drug repurposing
 
-> Repository accompanying *AetherCell: a generative engine for transcriptomic perturbation prediction and therapeutic discoverys*.
+> Repository accompanying *AetherCell enables cross-platform transcriptomic perturbation prediction and drug repurposing*.
 
 [![Python](https://img.shields.io/badge/Python-3.10-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0%2B-orange.svg)](https://pytorch.org/)
